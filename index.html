@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gráficos - Percepções e Comportamentos sobre Vacinas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 24px;
+            color: #1a3c6e;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            color: #2a4d8e;
+            font-style: italic;
+        }
+        
+        .charts-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            color: #1a3c6e;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4a7dce;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 25px;
+        }
+        
+        .chart-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .chart-container:hover {
+            transform: translateY(-5px);
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            color: #1a3c6e;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+        }
+        
+        .stats-info {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e6f0ff;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .stats-info p {
+            margin: 5px 0;
+        }
+        
+        .highlight {
+            font-weight: bold;
+            color: #1a3c6e;
+        }
+        
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Análise de Hesitação Vacinal</h1>
+            <p class="subtitle">Visualização gráfica da associação da hesitação vacinal com percepções e comportamentos relacionados às vacinas</p>
+        </header>
+        
+        <div class="charts-section">
+            <h2 class="section-title">Percepções sobre Eficácia das Vacinas</h2>
+            
+            <div class="charts-grid">
+                <!-- Gráfico 1: Percepção sobre eficácia das vacinas -->
+                <div class="chart-container">
+                    <div class="chart-title">Hesitação Vacinal por Percepção de Eficácia</div>
+                    <div class="chart-wrapper">
+                        <canvas id="eficaciaChart"></canvas>
+                    </div>
+                    <div class="stats-info">
+                        <p>Teste: Qui² p<0,001 / V=0,246</p>
+                        <p>Prevalência: <span class="highlight">65,5%</span> (não acreditam) vs <span class="highlight">20,7%</span> (acreditam)</p>
+                        <p>Razão de Prevalência: <span class="highlight">3,16</span></p>
+                    </div>
+                </div>
+                
+                <!-- Gráfico 2: Confiança em vacinas específicas -->
+                <div class="chart-container">
+                    <div class="chart-title">Hesitação Vacinal por Confiança em Vacinas Específicas</div>
+                    <div class="chart-wrapper">
+                        <canvas id="confiancaChart"></canvas>
+                    </div>
+                    <div class="stats-info">
+                        <p>Teste: Qui² p<0,001 / V=0,438</p>
+                        <p>Prevalência: <span class="highlight">76,4%</span> (não confiam) vs <span class="highlight">16,8%</span> (confiam)</p>
+                        <p>Razão de Prevalência: <span class="highlight">4,55</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="charts-section">
+            <h2 class="section-title">Vacinas Recusadas</h2>
+            
+            <div class="charts-grid">
+                <!-- Gráfico 3: Vacinas recusadas -->
+                <div class="chart-container">
+                    <div class="chart-title">Distribuição das Vacinas Recusadas</div>
+                    <div class="chart-wrapper">
+                        <canvas id="recusadasChart"></canvas>
+                    </div>
+                    <div class="stats-info">
+                        <p>Teste: Qui² p<0,001 / V=1,000</p>
+                        <p>Prevalência: <span class="highlight">100%</span> para todas as categorias</p>
+                        <p>Distribuição: <span class="highlight">COVID-19 (77,1%)</span>, <span class="highlight">Influenza (17,8%)</span>, <span class="highlight">Outras (5,1%)</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="charts-section">
+            <h2 class="section-title">Motivos da Hesitação</h2>
+            
+            <div class="charts-grid">
+                <!-- Gráfico 4: Motivos da hesitação -->
+                <div class="chart-container">
+                    <div class="chart-title">Distribuição dos Motivos da Hesitação Vacinal</div>
+                    <div class="chart-wrapper">
+                        <canvas id="motivosChart"></canvas>
+                    </div>
+                    <div class="stats-info">
+                        <p>Teste: Qui² p<0,001 / V=1,000</p>
+                        <p>Prevalência: <span class="highlight">100%</span> para todos os motivos</p>
+                        <p>Distribuição: <span class="highlight">Reação/morrer (32,5%)</span>, <span class="highlight">Outro motivo (35,0%)</span>, <span class="highlight">Não confio (28,2%)</span>, <span class="highlight">Dificuldade de acesso (4,3%)</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Paleta de cores em tons de azul
+        const bluePalette = [
+            '#1a3c6e', '#2a4d8e', '#3a5dae', '#4a7dce', '#5a9dee',
+            '#6abdfe', '#7acdfe', '#8adefe', '#9aeefe', '#aafefe'
+        ];
+        
+        // Configuração comum para gráficos de rosca
+        const doughnutOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return `${context.label}: ${context.parsed}%`;
+                        }
+                    }
+                },
+                datalabels: {
+                    color: '#fff',
+                    font: {
+                        weight: 'bold',
+                        size: 14
+                    },
+                    formatter: (value, context) => {
+                        return value + '%';
+                    },
+                    textAlign: 'center',
+                    textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+                }
+            },
+            cutout: '60%'
+        };
+        
+        // Gráfico 1: Percepção sobre eficácia das vacinas
+        const eficaciaCtx = document.getElementById('eficaciaChart').getContext('2d');
+        const eficaciaChart = new Chart(eficaciaCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Acreditam - Não hesita', 'Acreditam - Hesita', 'Não acreditam - Não hesita', 'Não acreditam - Hesita'],
+                datasets: [{
+                    data: [79.3, 20.7, 34.5, 65.5],
+                    backgroundColor: [
+                        bluePalette[2], bluePalette[0], bluePalette[5], bluePalette[3]
+                    ],
+                    borderWidth: 1,
+                    borderColor: '#fff'
+                }]
+            },
+            options: doughnutOptions,
+            plugins: [ChartDataLabels]
+        });
+        
+        // Gráfico 2: Confiança em vacinas específicas
+        const confiancaCtx = document.getElementById('confiancaChart').getContext('2d');
+        const confiancaChart = new Chart(confiancaCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Confiam - Não hesita', 'Confiam - Hesita', 'Não confiam - Não hesita', 'Não confiam - Hesita'],
+                datasets: [{
+                    data: [83.2, 16.8, 23.6, 76.4],
+                    backgroundColor: [
+                        bluePalette[2], bluePalette[0], bluePalette[5], bluePalette[3]
+                    ],
+                    borderWidth: 1,
+                    borderColor: '#fff'
+                }]
+            },
+            options: doughnutOptions,
+            plugins: [ChartDataLabels]
+        });
+        
+        // Gráfico 3: Vacinas recusadas
+        const recusadasCtx = document.getElementById('recusadasChart').getContext('2d');
+        const recusadasChart = new Chart(recusadasCtx, {
+            type: 'pie',
+            data: {
+                labels: ['COVID-19', 'Influenza', 'Outras (DTPa, Hepatite, Tríplice viral)'],
+                datasets: [{
+                    data: [91, 21, 6],
+                    backgroundColor: [
+                        bluePalette[0], bluePalette[2], bluePalette[4]
+                    ],
+                    borderWidth: 1,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return `${context.label}: ${context.parsed} (${percentage}%)`;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        color: '#fff',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        },
+                        formatter: (value, context) => {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return percentage + '%';
+                        },
+                        textAlign: 'center',
+                        textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+        
+        // Gráfico 4: Motivos da hesitação
+        const motivosCtx = document.getElementById('motivosChart').getContext('2d');
+        const motivosChart = new Chart(motivosCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Reação/morrer', 'Não confio', 'Dificuldade de acesso', 'Outro motivo'],
+                datasets: [{
+                    data: [38, 33, 5, 41],
+                    backgroundColor: [
+                        bluePalette[0], bluePalette[2], bluePalette[4], bluePalette[6]
+                    ],
+                    borderWidth: 1,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return `${context.label}: ${context.parsed} (${percentage}%)`;
+                            }
+                        }
+                    },
+                    datalabels: {
+                        color: '#fff',
+                        font: {
+                            weight: 'bold',
+                            size: 14
+                        },
+                        formatter: (value, context) => {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((value / total) * 100).toFixed(1);
+                            return percentage + '%';
+                        },
+                        textAlign: 'center',
+                        textShadow: '1px 1px 2px rgba(0,0,0,0.5)'
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    </script>
+</body>
+</html>
